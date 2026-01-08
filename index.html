@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>管理ID QRコード生成</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+    input {
+      font-size: 16px;
+      padding: 6px;
+      width: 200px;
+    }
+    button {
+      font-size: 16px;
+      padding: 6px 12px;
+      margin-left: 6px;
+    }
+    canvas {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>管理ID QRコード生成</h2>
+
+  <input
+    type="text"
+    id="manageId"
+    placeholder="例）T-001"
+    onkeydown="handleKey(event)"
+  >
+  <button onclick="generate()">生成</button>
+
+  <br>
+
+  <canvas id="qrCanvas" width="240" height="280"></canvas>
+
+  <br><br>
+  <a id="download" download="qr.png">画像を保存</a>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbyhMaAMTRU8N2pEwQ0BsskCAMRIREnD92JT6iBgKwroEOMX1HcP62poGZd3UJA1zPs-/exec";
+
+    function handleKey(e) {
+      if (e.key === "Enter") {
+        generate();
+      }
+    }
+
+    function generate() {
+      const id = document.getElementById("manageId").value.trim();
+      if (!id) {
+        alert("管理IDを入力してください");
+        return;
+      }
+
+      const url = WEB_APP_URL + "?id=" + encodeURIComponent(id);
+
+      const temp = document.createElement("div");
+      new QRCode(temp, {
+        text: url,
+        width: 200,
+        height: 200,
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      setTimeout(() => {
+        const qrImg = temp.querySelector("img");
+
+        const canvas = document.getElementById("qrCanvas");
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(qrImg, 20, 10, 200, 200);
+
+        ctx.fillStyle = "#000000";
+        ctx.font = "bold 16px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(id, canvas.width / 2, 245);
+
+        document.getElementById("download").href =
+          canvas.toDataURL("image/png");
+      }, 100);
+    }
+  </script>
+
+</body>
+</html>
