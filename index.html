@@ -76,9 +76,9 @@
         correctLevel: QRCode.CorrectLevel.M
       });
 
-      setTimeout(() => {
-        const qrImg = temp.querySelector("img");
+      const qrImg = temp.querySelector("img");
 
+      qrImg.onload = () => {
         const canvas = document.getElementById("qrCanvas");
         const ctx = canvas.getContext("2d");
 
@@ -96,7 +96,13 @@
           canvas.toDataURL("image/png");
 
         document.body.removeChild(temp);
-      }, 150);
+      };
+
+      qrImg.onerror = () => {
+        alert("QRコード画像の読み込みに失敗しました");
+        document.body.removeChild(temp);
+      };
+
     }
   </script>
 
