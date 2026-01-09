@@ -66,6 +66,9 @@
       const url = WEB_APP_URL + "?id=" + encodeURIComponent(id);
 
       const temp = document.createElement("div");
+      temp.style.display = "none";
+      document.body.appendChild(temp);
+
       new QRCode(temp, {
         text: url,
         width: 200,
@@ -91,7 +94,9 @@
 
         document.getElementById("download").href =
           canvas.toDataURL("image/png");
-      }, 100);
+
+        document.body.removeChild(temp);
+      }, 150);
     }
   </script>
 
